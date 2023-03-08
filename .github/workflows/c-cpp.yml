@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest, macos-12]
         config: [Release]
         include:
           - os: ubuntu-latest
@@ -32,7 +32,7 @@ jobs:
                 C:\vcpkg\packages
             extra_cmake_args: -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
             cmake_preset: windows-ninja
-          - os: macos-latest
+          - os: macos-12
             cache_path: ~/Library/Caches/ccache
             extra_cmake_args: 
             cmake_preset: macos-ninja
@@ -43,11 +43,11 @@ jobs:
           fetch-depth: 0
           submodules: recursive
 
-      - name: Set up build environment (macos-latest)
+      - name: Set up build environment (macos-12)
         run: |
           brew install boost ccache ninja molten-vk openssl create-dmg
           echo "/usr/local/opt/ccache/libexec" >> $GITHUB_PATH
-        if: matrix.os == 'macos-latest'
+        if: matrix.os == 'macos-12'
 
       - name: Set up build environment (ubuntu-latest)
         run: |
@@ -118,7 +118,7 @@ jobs:
             cp /usr/lib/x86_64-linux-gnu/libcrypto.so.3 ./libcrypto.so.3
         if: matrix.os == 'ubuntu-latest'
         
-      - name: Create DMG (macos-latest)
+      - name: Create DMG (macos-12)
         run: |
           cd build/${{ matrix.cmake_preset }}/bin/${{ matrix.config }}
           create-dmg \
@@ -131,7 +131,7 @@ jobs:
             vita3k-${{ env.git_short_sha }}-${{ matrix.os }}.dmg \
             Vita3K.app
           rm -rf Vita3K.app
-        if: matrix.os == 'macos-latest'
+        if: matrix.os == 'macos-12'
 
       - uses: actions/upload-artifact@v3
         with:
